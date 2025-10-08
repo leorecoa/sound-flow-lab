@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Volume2 } from "lucide-react";
+import { Volume2, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { AdvancedAudioPlayer } from "@/components/audio/AdvancedAudioPlayer";
+import { Button } from "./ui/button";
+import { useAudio } from "@/hooks/useAudio";
 
 interface ExampleCardProps {
   formalPhrase: string;
@@ -11,13 +12,15 @@ interface ExampleCardProps {
   audioUrl?: string;
 }
 
-export const ExampleCard = ({ 
-  formalPhrase, 
-  connectedPhrase, 
-  translation, 
+export const ExampleCard = ({
+  formalPhrase,
+  connectedPhrase,
+  translation,
   context,
   audioUrl = ""
 }: ExampleCardProps) => {
+  const [isPlaying, toggleAudio] = useAudio(audioUrl);
+
   // Function to highlight connections in the phrase
   const highlightConnections = (phrase: string) => {
     return phrase.split('_').map((part, index, array) => (
@@ -49,13 +52,20 @@ export const ExampleCard = ({
           <p className="text-sm text-muted-foreground mb-1">Tradução:</p>
           <p className="text-base">{translation}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Volume2 className="w-4 h-4 text-muted-foreground" />
-          <Badge variant="secondary" className="text-xs">
-            {context}
-          </Badge>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Volume2 className="w-4 h-4 text-muted-foreground" />
+            <Badge variant="secondary" className="text-xs">
+              {context}
+            </Badge>
+          </div>
+          {audioUrl && (
+            <Button onClick={toggleAudio} size="icon" className="rounded-full w-12 h-12 shrink-0">
+              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+              <span className="sr-only">Tocar áudio</span>
+            </Button>
+          )}
         </div>
-        {audioUrl && <AdvancedAudioPlayer audioUrl={audioUrl} showWaveform={true} />}
       </CardContent>
     </Card>
   );

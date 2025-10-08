@@ -1,10 +1,12 @@
 import { useParams, Link } from "react-router-dom";
 import { BookOpen, Headphones, Mic, Play } from "lucide-react";
+import { BookOpen, Headphones, Mic, Play, Square, Waves } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExampleCard } from "@/components/ExampleCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { useMediaRecorder } from "@/hooks/useMediaRecorder";
 
 const moduleData = {
   "1": {
@@ -15,19 +17,22 @@ const moduleData = {
         formalPhrase: "It is an apple",
         connectedPhrase: "IT_IS_AN_APPLE",
         translation: "É uma maçã",
-        context: "Conversa casual"
+        context: "Conversa casual",
+        audioUrl: "/audio/it-is-an-apple.mp3" // Placeholder
       },
       {
         formalPhrase: "Turn it off",
         connectedPhrase: "TURN_IT_OFF",
         translation: "Desligue isso",
-        context: "Pedido direto"
+        context: "Pedido direto",
+        audioUrl: "/audio/turn-it-off.mp3" // Placeholder
       },
       {
         formalPhrase: "Pick it up",
         connectedPhrase: "PICK_IT_UP",
         translation: "Pegue isso",
-        context: "Instrução"
+        context: "Instrução",
+        audioUrl: "/audio/pick-it-up.mp3" // Placeholder
       }
     ],
     exercises: [
@@ -41,6 +46,7 @@ const moduleData = {
 const ModulePage = () => {
   const { moduleId } = useParams();
   const module = moduleData[moduleId as keyof typeof moduleData];
+  const { status, mediaBlobUrl, startRecording, stopRecording } = useMediaRecorder();
 
   const handlePlayAudio = () => {
     toast.info("Recurso de áudio será implementado em breve!");
@@ -155,7 +161,35 @@ const ModulePage = () => {
                   <p className="text-sm text-muted-foreground">
                     Em breve você poderá gravar sua voz, ver a onda sonora e receber feedback preciso.
                   </p>
-                </div>
+                  <div className="bg-muted rounded-lg p-8 text-center space-y-6">
+                    {status === 'recording' ? (
+                      <Button onClick={stopRecording} size="lg" className="w-24 h-24 rounded-full bg-red-500 hover:bg-red-600 shadow-lg">
+                        <Square className="w-10 h-10 fill-white" />
+                      </Button>
+                    ) : (
+                      <Button onClick={startRecording} size="lg" className="w-24 h-24 rounded-full shadow-lg">
+                        <Mic className="w-10 h-10" />
+                      </Button>
+                    )}
+
+                    {status === 'recording' && (
+                      <div className="flex items-center justify-center gap-2 text-red-500 animate-pulse">
+                        <Waves className="w-5 h-5" />
+                        <p className="text-lg font-semibold">Gravando...</p>
+                      </div>
+                    )}
+
+                    {mediaBlobUrl && status === 'stopped' && (
+                      <div className="space-y-2">
+                        <p className="text-muted-foreground">Sua gravação:</p>
+                        <audio src={mediaBlobUrl} controls className="w-full" />
+                      </div>
+                    )}
+
+                    {status === 'denied' && (
+                      <p className="text-red-500">Acesso ao microfone negado. Por favor, habilite nas configurações do seu navegador.</p>
+                    )}
+                  </div>
               </CardContent>
             </Card>
           </TabsContent>
