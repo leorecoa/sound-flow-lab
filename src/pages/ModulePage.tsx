@@ -112,7 +112,6 @@ const ModulePage = () => {
                 <ExampleCard
                   key={index}
                   {...example}
-                  onPlayAudio={handlePlayAudio}
                 />
               ))}
             </div>

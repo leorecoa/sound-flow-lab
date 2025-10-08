@@ -84,10 +84,30 @@ export default {
             height: "0",
           },
         },
+        "pulse-subtle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.85" },
+        },
+        "scale-hover": {
+          "0%": { transform: "scale(1)" },
+          "100%": { transform: "scale(1.02)" },
+        },
+        "fill-progress": {
+          "0%": { strokeDashoffset: "251.2" },
+          "100%": { strokeDashoffset: "0" },
+        },
+        "rotate-icon": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(12deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
+        "scale-hover": "scale-hover 0.3s ease-out forwards",
+        "fill-progress": "fill-progress 1.5s ease-out forwards",
+        "rotate-icon": "rotate-icon 0.3s ease-out",
       },
     },
   },
