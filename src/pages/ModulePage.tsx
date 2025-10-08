@@ -108,9 +108,9 @@ const ModulePage = () => {
             </Card>
 
             <div className="space-y-4">
-              {module.examples.map((example, index) => (
+              {module.examples.map((example) => (
                 <ExampleCard
-                  key={index}
+                  key={example.formalPhrase}
                   {...example}
                 />
               ))}
@@ -127,8 +127,8 @@ const ModulePage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {module.exercises.map((exercise, index) => (
-                  <Card key={index} className="border-2">
+                {module.exercises.map((exercise) => (
+                  <Card key={exercise} className="border-2">
                     <CardContent className="pt-6">
                       <div className="flex items-center justify-between gap-4">
                         <p className="text-lg flex-1">{exercise}</p>
@@ -154,12 +154,12 @@ const ModulePage = () => {
               </CardHeader>
               <CardContent>
                 <div className="bg-muted rounded-lg p-8 text-center">
-                  <Mic className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <Mic className="w-20 h-20 mx-auto mb-6 text-primary/50" />
                   <p className="text-lg text-muted-foreground mb-4">
-                    Recurso de gravação em desenvolvimento
+                    O laboratório de gravação está quase pronto!
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Em breve você poderá gravar sua voz e comparar com exemplos nativos!
+                    Em breve você poderá gravar sua voz, ver a onda sonora e receber feedback preciso.
                   </p>
                 </div>
               </CardContent>

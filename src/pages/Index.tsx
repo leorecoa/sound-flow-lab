@@ -45,18 +45,18 @@ const Index = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
         <div className="container mx-auto px-4 py-20 relative">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <div className="inline-block px-4 py-2 bg-accent/10 rounded-full border border-accent/20 mb-4">
-              <span className="text-sm font-semibold text-accent">🎯 Domine o Inglês Natural</span>
+            <div className="inline-block px-4 py-2 bg-primary/10 rounded-full border border-primary/20 mb-4">
+              <span className="text-sm font-semibold text-primary">🚀 Learn by Listening</span>
             </div>
-            
+
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
-                Sound Connections
+                Sound Flow Lab
               </span>
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-              Aprenda a entender e falar inglês como um nativo através das conexões sonoras (connected speech)
+              Aprenda a falar inglês com fluidez e pronúncia nativa através da sonoridade, ritmo e prática experimental.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
@@ -82,7 +82,7 @@ const Index = () => {
             <h3 className="text-xl font-semibold">Áudio Nativo</h3>
             <p className="text-muted-foreground">Exemplos com pronúncia de falantes nativos</p>
           </div>
-          
+
           <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
             <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
               <MessageSquare className="w-7 h-7 text-accent" />
@@ -90,7 +90,7 @@ const Index = () => {
             <h3 className="text-xl font-semibold">Contexto Real</h3>
             <p className="text-muted-foreground">Aprenda com situações do dia a dia</p>
           </div>
-          
+
           <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
             <div className="w-14 h-14 bg-success/10 rounded-2xl flex items-center justify-center mx-auto">
               <Zap className="w-7 h-7 text-success" />
@@ -105,7 +105,7 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Os 4 Pilares do Connected Speech</h2>
+            <h2 className="text-4xl font-bold mb-4">Your Practice Flow</h2>
             <p className="text-xl text-muted-foreground">
               Comece sua jornada através dos módulos progressivos
             </p>
