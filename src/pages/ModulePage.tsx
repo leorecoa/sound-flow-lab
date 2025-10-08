@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Headphones, Mic, Play } from "lucide-react";
+import { BookOpen, Headphones, Mic, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExampleCard } from "@/components/ExampleCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,17 +60,11 @@ const ModulePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
-          <Link to="/">
-            <Button variant="ghost" className="mb-4 -ml-4">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar
-            </Button>
-          </Link>
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             {module.title}
           </h1>
           <p className="text-lg text-muted-foreground">{module.description}</p>

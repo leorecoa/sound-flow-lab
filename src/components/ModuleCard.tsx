@@ -1,8 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CircularProgress } from "@/components/ui/circular-progress";
-import { LucideIcon } from "lucide-react";
+import { type LucideIcon, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { CheckCircle2 } from "lucide-react";
 
 interface ModuleCardProps {
   title: string;
@@ -21,15 +20,15 @@ export const ModuleCard = ({ title, description, icon: Icon, progress, moduleId,
       <Card className="group hover:scale-[1.02] hover:shadow-[var(--shadow-hover)] transition-all duration-300 cursor-pointer border-2 hover:border-primary/50 h-full relative overflow-hidden">
         {isCompleted && (
           <div className="absolute top-4 right-4 z-10">
-            <CheckCircle2 className="w-6 h-6 text-accent fill-accent" />
+            <CheckCircle2 className="w-6 h-6 text-success fill-background" />
           </div>
         )}
         <CardHeader>
           <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform duration-300`}>
-            <Icon className="w-8 h-8 text-white" />
+            <Icon className="w-9 h-9 text-white" />
           </div>
-          <CardTitle className="text-2xl">{title}</CardTitle>
-          <CardDescription className="text-base">{description}</CardDescription>
+          <CardTitle className="text-xl font-medium">{title}</CardTitle>
+          <CardDescription className="text-base leading-relaxed">{description}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">

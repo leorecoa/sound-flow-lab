@@ -1,5 +1,6 @@
 import { ModuleCard } from "@/components/ModuleCard";
 import { Button } from "@/components/ui/button";
+import { SectionHeader } from "@/components/SectionHeader";
 import { Link2, MessageSquare, Zap, Volume2 } from "lucide-react";
 
 const modules = [
@@ -39,7 +40,7 @@ const modules = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div>
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
@@ -60,7 +61,13 @@ const Index = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" className="text-lg h-14 px-8 shadow-lg hover:shadow-xl transition-all">
+              <Button
+                size="lg"
+                className="text-lg h-14 px-8 shadow-lg hover:shadow-xl 
+                           bg-gradient-to-r from-primary to-accent text-primary-foreground 
+                           bg-[length:200%_auto] hover:bg-[position:right_center] 
+                           transition-all duration-500 ease-in-out"
+              >
                 Começar Agora
                 <Zap className="ml-2 w-5 h-5" />
               </Button>
@@ -74,29 +81,30 @@ const Index = () => {
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
-            <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
-              <Volume2 className="w-7 h-7 text-primary" />
+        <div className="max-w-5xl mx-auto">
+          <SectionHeader title="Aprenda de forma sensorial" subtitle="Nosso método foca em como o inglês realmente soa, para que você desenvolva uma pronúncia natural e confiante." />
+          <div className="grid md:grid-cols-3 gap-8 mt-16">
+            <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
+              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
+                <Volume2 className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Áudio Nativo</h3>
+              <p className="text-muted-foreground">Exemplos com pronúncia de falantes nativos</p>
             </div>
-            <h3 className="text-xl font-semibold">Áudio Nativo</h3>
-            <p className="text-muted-foreground">Exemplos com pronúncia de falantes nativos</p>
-          </div>
-
-          <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
-            <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
-              <MessageSquare className="w-7 h-7 text-accent" />
+            <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
+              <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
+                <MessageSquare className="w-7 h-7 text-accent" />
+              </div>
+              <h3 className="text-xl font-semibold">Contexto Real</h3>
+              <p className="text-muted-foreground">Aprenda com situações do dia a dia</p>
             </div>
-            <h3 className="text-xl font-semibold">Contexto Real</h3>
-            <p className="text-muted-foreground">Aprenda com situações do dia a dia</p>
-          </div>
-
-          <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
-            <div className="w-14 h-14 bg-success/10 rounded-2xl flex items-center justify-center mx-auto">
-              <Zap className="w-7 h-7 text-success" />
+            <div className="text-center space-y-3 p-6 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all">
+              <div className="w-14 h-14 bg-success/10 rounded-2xl flex items-center justify-center mx-auto">
+                <Zap className="w-7 h-7 text-success" />
+              </div>
+              <h3 className="text-xl font-semibold">Prática Interativa</h3>
+              <p className="text-muted-foreground">Exercícios e feedback imediato</p>
             </div>
-            <h3 className="text-xl font-semibold">Prática Interativa</h3>
-            <p className="text-muted-foreground">Exercícios e feedback imediato</p>
           </div>
         </div>
       </section>
@@ -104,12 +112,9 @@ const Index = () => {
       {/* Modules Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Your Practice Flow</h2>
-            <p className="text-xl text-muted-foreground">
-              Comece sua jornada através dos módulos progressivos
-            </p>
-          </div>
+          <SectionHeader
+            title="Your Practice Flow"
+            subtitle="Comece sua jornada através dos módulos progressivos para dominar as conexões sonoras do inglês." />
 
           <div className="grid md:grid-cols-2 gap-6">
             {modules.map((module) => (
@@ -127,7 +132,12 @@ const Index = () => {
             <p className="text-xl mb-8 text-white/90">
               Comece agora e transforme sua compreensão do inglês falado
             </p>
-            <Button size="lg" variant="secondary" className="h-14 px-8 text-lg shadow-lg hover:scale-105 transition-transform">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="h-14 px-8 text-lg shadow-lg 
+                         hover:scale-105 transition-transform duration-300"
+            >
               Iniciar Primeira Lição
               <Zap className="ml-2 w-5 h-5" />
             </Button>
