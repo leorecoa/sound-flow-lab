@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useMediaRecorder } from "@/hooks/useMediaRecorder";
+import { MultipleChoiceExercise } from "@/components/MultipleChoiceExercise";
 import { SoundWave } from "@/components/SoundWave";
 import { useQuery } from "@tanstack/react-query";
 import ReactConfetti from "react-confetti";
@@ -39,9 +40,23 @@ const moduleData = {
       }
     ],
     exercises: [
-      "Listen and repeat: 'Take it easy' → TAKE_IT_EASY",
-      "Listen and repeat: 'Come on in' → COME_ON_IN",
-      "Listen and repeat: 'Let it go' → LET_IT_GO"
+      {
+        type: 'listen_repeat',
+        id: 'ex1',
+        text: "Listen and repeat: 'Take it easy' → TAKE_IT_EASY"
+      },
+      {
+        type: 'multiple_choice',
+        id: 'ex2',
+        question: "Qual frase demonstra a conexão correta para 'What are you doing?'",
+        options: [
+          "What are you doing?",
+          "Whatcha doin'?",
+          "What you doing?",
+          "What are doing?"
+        ],
+        correctAnswer: "Whatcha doin'?"
+      },
     ]
   }
 };
@@ -171,18 +186,26 @@ const ModulePage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {module.exercises.map((exercise) => (
-                  <Card key={exercise} className="border-2">
-                    <CardContent className="pt-6">
-                      <div className="flex items-center justify-between gap-4">
-                        <p className="text-lg flex-1">{exercise}</p>
-                        <Button onClick={handlePlayAudio} size="lg" className="rounded-full">
-                          <Play className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                {module.exercises.map((exercise) => {
+                  if (exercise.type === 'listen_repeat') {
+                    return (
+                      <Card key={exercise.id} className="border-2">
+                        <CardContent className="pt-6">
+                          <div className="flex items-center justify-between gap-4">
+                            <p className="text-lg flex-1">{exercise.text}</p>
+                            <Button onClick={handlePlayAudio} size="lg" className="rounded-full">
+                              <Play className="w-5 h-5" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  }
+                  if (exercise.type === 'multiple_choice') {
+                    return <MultipleChoiceExercise key={exercise.id} {...exercise} />;
+                  }
+                  return null;
+                })}
               </CardContent>
             </Card>
           </TabsContent>

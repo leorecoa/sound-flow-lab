@@ -1,13 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Award, Star, Trophy } from "lucide-react";
+import { Award, Star, Trophy, Flame } from "lucide-react";
 
 const user = {
     name: "Leo Recoa",
     avatarUrl: "https://github.com/shadcn.png", // Placeholder
     joinDate: "Membro desde Julho 2024",
     overallProgress: 75,
+    streak: {
+        current: 5,
+        longest: 12,
+    },
     achievements: [
         { id: 1, name: "Sound Master", description: "Completou 100 exercícios", icon: Trophy, color: "text-yellow-400" },
         { id: 2, name: "Accent Hero", description: "Atingiu 95% de precisão", icon: Star, color: "text-blue-400" },
@@ -29,6 +33,24 @@ const ProfilePage = () => {
                     <p className="text-muted-foreground">{user.joinDate}</p>
                 </div>
             </div>
+
+            {/* Streak Section */}
+            <Card className="mb-8">
+                <CardContent className="pt-6 flex justify-around text-center">
+                    <div>
+                        <div className="relative w-16 h-16 mx-auto">
+                            <Flame className="w-16 h-16 text-orange-400" />
+                            <span className="absolute inset-0 flex items-center justify-center text-lg font-bold text-white">{user.streak.current}</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-2">Dias seguidos</p>
+                    </div>
+                    <div>
+                        <Trophy className="w-16 h-16 mx-auto text-yellow-400" />
+                        <p className="text-2xl font-bold mt-2">{user.streak.longest}</p>
+                        <p className="text-sm text-muted-foreground">Maior sequência</p>
+                    </div>
+                </CardContent>
+            </Card>
 
             {/* Progress Section */}
             <Card className="mb-8 bg-card/50">
