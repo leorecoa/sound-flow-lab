@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { WeeklyProgressChart } from "@/components/WeeklyProgressChart";
 import { Award, Star, Trophy, Flame } from "lucide-react";
 
 const user = {
@@ -18,6 +19,16 @@ const user = {
         { id: 3, name: "Vowel Voyager", description: "Dominou as conexões de vogais", icon: Award, color: "text-green-400" },
     ],
 };
+
+const weeklyProgressData = [
+    { name: 'Seg', progress: 3 },
+    { name: 'Ter', progress: 5 },
+    { name: 'Qua', progress: 2 },
+    { name: 'Qui', progress: 7 },
+    { name: 'Sex', progress: 4 },
+    { name: 'Sáb', progress: 8 },
+    { name: 'Dom', progress: 1 },
+];
 
 const ProfilePage = () => {
     return (
@@ -65,6 +76,9 @@ const ProfilePage = () => {
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Weekly Progress Chart */}
+            <WeeklyProgressChart data={weeklyProgressData} />
 
             {/* Achievements Section */}
             <div>
