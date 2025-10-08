@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { BookOpen, Headphones, Mic, Play } from "lucide-react";
-import { BookOpen, Headphones, Mic, Play, Square, Waves } from "lucide-react";
+import { BookOpen, Headphones, Mic, Play, Square, Waves, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExampleCard } from "@/components/ExampleCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useMediaRecorder } from "@/hooks/useMediaRecorder";
+import { SoundWave } from "@/components/SoundWave";
+import { useQuery } from "@tanstack/react-query";
+import ReactConfetti from "react-confetti";
 
 const moduleData = {
   "1": {
@@ -43,20 +46,54 @@ const moduleData = {
   }
 };
 
+// Simula uma chamada de API para buscar os dados do módulo
+const fetchModule = async (moduleId: string) => {
+  console.log(`Fetching module: ${moduleId}`);
+  await new Promise(resolve => setTimeout(resolve, 500)); // Simula atraso de rede
+
+  const data = moduleData[moduleId as keyof typeof moduleData];
+  if (data) {
+    return data;
+  }
+  throw new Error("Módulo não encontrado");
+};
+
 const ModulePage = () => {
-  const { moduleId } = useParams();
-  const module = moduleData[moduleId as keyof typeof moduleData];
+  const { moduleId } = useParams<{ moduleId: string }>();
   const { status, mediaBlobUrl, startRecording, stopRecording } = useMediaRecorder();
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const { data: module, isLoading, isError, error } = useQuery({
+    queryKey: ['module', moduleId],
+    queryFn: () => fetchModule(moduleId!),
+    enabled: !!moduleId,
+  });
+
+  const handleCheckPronunciation = () => {
+    // Simula uma verificação de sucesso
+    toast.success("Parabéns! Pronúncia perfeita!");
+    setShowConfetti(true);
+    // Oculta os confetes após a animação
+    setTimeout(() => setShowConfetti(false), 7000);
+  };
 
   const handlePlayAudio = () => {
     toast.info("Recurso de áudio será implementado em breve!");
   };
 
-  if (!module) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isError || !module) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Módulo não encontrado</h1>
+          <h1 className="text-2xl font-bold mb-4">{error instanceof Error ? error.message : "Módulo não encontrado"}</h1>
           <Link to="/">
             <Button>Voltar ao início</Button>
           </Link>
@@ -67,6 +104,13 @@ const ModulePage = () => {
 
   return (
     <div>
+      {showConfetti && (
+        <ReactConfetti
+          recycle={false}
+          numberOfPieces={400}
+          onConfettiComplete={() => setShowConfetti(false)}
+        />
+      )}
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
@@ -153,43 +197,38 @@ const ModulePage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-muted rounded-lg p-8 text-center">
-                  <Mic className="w-20 h-20 mx-auto mb-6 text-primary/50" />
-                  <p className="text-lg text-muted-foreground mb-4">
-                    O laboratório de gravação está quase pronto!
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Em breve você poderá gravar sua voz, ver a onda sonora e receber feedback preciso.
-                  </p>
-                  <div className="bg-muted rounded-lg p-8 text-center space-y-6">
-                    {status === 'recording' ? (
-                      <Button onClick={stopRecording} size="lg" className="w-24 h-24 rounded-full bg-red-500 hover:bg-red-600 shadow-lg">
-                        <Square className="w-10 h-10 fill-white" />
+                <div className="bg-muted rounded-lg p-8 text-center space-y-6">
+                  {status === 'recording' ? (
+                    <Button onClick={stopRecording} size="lg" className="w-24 h-24 rounded-full bg-red-500 hover:bg-red-600 shadow-lg">
+                      <Square className="w-10 h-10 fill-white" />
+                    </Button>
+                  ) : (
+                    <Button onClick={startRecording} size="lg" className="w-24 h-24 rounded-full shadow-lg">
+                      <Mic className="w-10 h-10" />
+                    </Button>
+                  )}
+
+                  {status === 'recording' && (
+                    <div className="flex items-center justify-center gap-2 text-red-500 animate-pulse">
+                      <SoundWave className="text-red-500" />
+                    </div>
+                  )}
+
+                  {mediaBlobUrl && status === 'stopped' && (
+                    <div className="space-y-2">
+                      <p className="text-muted-foreground">Sua gravação:</p>
+                      <audio src={mediaBlobUrl} controls className="w-full" />
+                      <Button onClick={handleCheckPronunciation} className="mt-4">
+                        <Check className="w-4 h-4 mr-2" />
+                        Verificar Pronúncia
                       </Button>
-                    ) : (
-                      <Button onClick={startRecording} size="lg" className="w-24 h-24 rounded-full shadow-lg">
-                        <Mic className="w-10 h-10" />
-                      </Button>
-                    )}
+                    </div>
+                  )}
 
-                    {status === 'recording' && (
-                      <div className="flex items-center justify-center gap-2 text-red-500 animate-pulse">
-                        <Waves className="w-5 h-5" />
-                        <p className="text-lg font-semibold">Gravando...</p>
-                      </div>
-                    )}
-
-                    {mediaBlobUrl && status === 'stopped' && (
-                      <div className="space-y-2">
-                        <p className="text-muted-foreground">Sua gravação:</p>
-                        <audio src={mediaBlobUrl} controls className="w-full" />
-                      </div>
-                    )}
-
-                    {status === 'denied' && (
-                      <p className="text-red-500">Acesso ao microfone negado. Por favor, habilite nas configurações do seu navegador.</p>
-                    )}
-                  </div>
+                  {status === 'denied' && (
+                    <p className="text-red-500">Acesso ao microfone negado. Por favor, habilite nas configurações do seu navegador.</p>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

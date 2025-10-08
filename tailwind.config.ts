@@ -105,6 +105,10 @@ export default {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(12deg)" },
         },
+        "wave": {
+          '0%, 40%, 100%': { transform: 'scaleY(0.4)' },
+          '20%': { transform: 'scaleY(1)' },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -113,6 +117,7 @@ export default {
         "scale-hover": "scale-hover 0.3s ease-out forwards",
         "fill-progress": "fill-progress 1.5s ease-out forwards",
         "rotate-icon": "rotate-icon 0.3s ease-out",
+        "wave": "wave 1.2s infinite ease-in-out",
       },
     },
   },
