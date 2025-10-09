@@ -7,7 +7,9 @@ import Index from "./pages/Index";
 import ModulePage from "./pages/ModulePage";
 import NotFound from "./pages/NotFound";
 import GlossaryPage from "./pages/GlossaryPage";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./SettingsPage";
+import AboutPage from "./pages/AboutPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
 
 const queryClient = new QueryClient();
 
@@ -15,13 +17,15 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
-      <Sonner />
+      <Sonner richColors />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/module/:moduleId" element={<ModulePage />} />
           <Route path="/glossary" element={<GlossaryPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

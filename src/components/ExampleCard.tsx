@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Volume2, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
-import { useAudio } from "@/hooks/useAudio";
+import { useAudio } from "@/pages/useAudio";
 
 interface ExampleCardProps {
   formalPhrase: string;
@@ -24,7 +24,7 @@ export const ExampleCard = ({
   // Function to highlight connections in the phrase
   const highlightConnections = (phrase: string) => {
     return phrase.split('_').map((part, index, array) => (
-      <span key={index}>
+      <span key={`${part}-${index}`}>
         <span className="font-bold text-accent">{part}</span>
         {index < array.length - 1 && <span className="text-accent">‿</span>}
       </span>

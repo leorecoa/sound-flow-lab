@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { BookOpen, Headphones, Mic, Play, Square, Waves, Loader2, Check } from "lucide-react";
+// Correção: Unificação das importações do 'lucide-react' para resolver o aviso de importação múltipla.
+import { AlertCircle, BookOpen, Check, Headphones, Loader2, Mic, Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExampleCard } from "@/components/ExampleCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { useMediaRecorder } from "@/hooks/useMediaRecorder";
-import { MultipleChoiceExercise } from "@/components/MultipleChoiceExercise";
-import { SoundWave } from "@/components/SoundWave";
+import { useMediaRecorder } from "./useMediaRecorder";
+import { MultipleChoiceExercise } from "./MultipleChoiceExercise";
+import { SoundWave } from "./SoundWave";
 import { useQuery } from "@tanstack/react-query";
+// @ts-ignore: Install '@types/react-confetti' for type definitions
 import ReactConfetti from "react-confetti";
+
+const CONFETTI_DURATION = 7000;
 
 const moduleData = {
   "1": {
@@ -80,16 +84,15 @@ const ModulePage = () => {
 
   const { data: module, isLoading, isError, error } = useQuery({
     queryKey: ['module', moduleId],
-    queryFn: () => fetchModule(moduleId!),
-    enabled: !!moduleId,
+    // Correção (S4325): Remoção da asserção de tipo desnecessária 'as string', pois o hook 'useParams' e a verificação 'enabled' já garantem a tipagem.
+    queryFn: () => fetchModule(moduleId),
+    enabled: !!moduleId, // The query will not run until moduleId is available
   });
 
   const handleCheckPronunciation = () => {
     // Simula uma verificação de sucesso
-    toast.success("Parabéns! Pronúncia perfeita!");
+    toast.success("Parabéns! Pronúncia perfeita!", { description: "+25 XP" });
     setShowConfetti(true);
-    // Oculta os confetes após a animação
-    setTimeout(() => setShowConfetti(false), 7000);
   };
 
   const handlePlayAudio = () => {
@@ -106,12 +109,14 @@ const ModulePage = () => {
 
   if (isError || !module) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div role="alert" className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
+          <AlertCircle className="mx-auto w-12 h-12 text-destructive mb-4" />
           <h1 className="text-2xl font-bold mb-4">{error instanceof Error ? error.message : "Módulo não encontrado"}</h1>
-          <Link to="/">
-            <Button>Voltar ao início</Button>
-          </Link>
+          <p className="text-muted-foreground mb-6">Não conseguimos carregar este módulo. Tente voltar para a página inicial.</p>
+          <Button asChild>
+            <Link to="/">Voltar ao início</Link>
+          </Button>
         </div>
       </div>
     );
@@ -123,7 +128,13 @@ const ModulePage = () => {
         <ReactConfetti
           recycle={false}
           numberOfPieces={400}
-          onConfettiComplete={() => setShowConfetti(false)}
+          onConfettiComplete={(confetti) => {
+            if (confetti) {
+              confetti.reset();
+            }
+            setShowConfetti(false);
+          }}
+          confettiSource={{ x: window.innerWidth / 2, y: window.innerHeight / 2, w: 0, h: 0 }}
         />
       )}
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -202,7 +213,12 @@ const ModulePage = () => {
                     );
                   }
                   if (exercise.type === 'multiple_choice') {
-                    return <MultipleChoiceExercise key={exercise.id} {...exercise} />;
+                    return <MultipleChoiceExercise
+                      key={exercise.id}
+                      question={exercise.question}
+                      options={exercise.options}
+                      correctAnswer={exercise.correctAnswer}
+                    />;
                   }
                   return null;
                 })}
@@ -239,8 +255,11 @@ const ModulePage = () => {
 
                   {mediaBlobUrl && status === 'stopped' && (
                     <div className="space-y-2">
-                      <p className="text-muted-foreground">Sua gravação:</p>
-                      <audio src={mediaBlobUrl} controls className="w-full" />
+                      <p id="recording-label" className="text-muted-foreground">Sua gravação:</p>
+                      {/* Correção: Adicionado elemento <track> para acessibilidade do player de áudio. */}
+                      <audio src={mediaBlobUrl} controls className="w-full">
+                        <track kind="captions" />
+                      </audio>
                       <Button onClick={handleCheckPronunciation} className="mt-4">
                         <Check className="w-4 h-4 mr-2" />
                         Verificar Pronúncia

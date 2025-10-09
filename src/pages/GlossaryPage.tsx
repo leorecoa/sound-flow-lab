@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
     Accordion,
@@ -5,6 +6,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
 
 const glossaryTerms = [
     {
@@ -30,20 +32,42 @@ const glossaryTerms = [
 ];
 
 const GlossaryPage = () => {
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const filteredTerms = glossaryTerms.filter(item =>
+        item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.definition.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
             <SectionHeader
                 title="Glossário de Pronúncia"
                 subtitle="Entenda os termos técnicos por trás da sonoridade do inglês."
             />
-            <Accordion type="single" collapsible className="w-full">
-                {glossaryTerms.map((item) => (
-                    <AccordionItem value={item.term} key={item.term}>
-                        <AccordionTrigger className="text-lg text-left">{item.term}</AccordionTrigger>
-                        <AccordionContent className="text-base text-muted-foreground">{item.definition}</AccordionContent>
-                    </AccordionItem>
-                ))}
-            </Accordion>
+
+            <div className="mb-8">
+                <Input
+                    type="text"
+                    placeholder="Pesquisar termos..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full"
+                />
+            </div>
+
+            {filteredTerms.length > 0 ? (
+                <Accordion type="single" collapsible className="w-full">
+                    {filteredTerms.map((item) => (
+                        <AccordionItem value={item.term} key={item.term}>
+                            <AccordionTrigger className="text-lg text-left">{item.term}</AccordionTrigger>
+                            <AccordionContent className="text-base text-muted-foreground">{item.definition}</AccordionContent>
+                        </AccordionItem>
+                    ))}
+                </Accordion>
+            ) : (
+                <p className="text-center text-muted-foreground">Nenhum termo encontrado para "{searchTerm}".</p>
+            )}
         </div>
     );
 };

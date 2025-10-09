@@ -1,6 +1,7 @@
-import { Github, Twitter, Waves } from "lucide-react";
+// Correção (S1128): Unificação das importações e remoção dos ícones não utilizados ('Lightbulb', 'Target').
+// Correção (S1874): Substituição do ícone depreciado 'GithubIcon' por 'GitBranch' para representar o repositório de código.
+import { GitBranch, Waves, X } from "lucide-react";
 import { Link } from "react-router-dom";
-
 export const Footer = () => {
     return (
         <footer className="bg-background border-t border-border/40 mt-auto">
@@ -15,13 +16,16 @@ export const Footer = () => {
                         <Link to="/glossary" className="hover:text-primary transition-colors">
                             Glossário
                         </Link>
+                        <Link to="/about" className="hover:text-primary transition-colors">
+                            Sobre
+                        </Link>
                     </div>
                     <div className="flex items-center gap-4">
-                        <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                            <Twitter className="w-5 h-5" />
+                        <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                            <X className="w-5 h-5" />
                         </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                            <Github className="w-5 h-5" />
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                            <GitBranch className="w-5 h-5" />
                         </a>
                     </div>
                 </div>

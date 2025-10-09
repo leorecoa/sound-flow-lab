@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Check, X } from 'lucide-react';
 
 interface MultipleChoiceExerciseProps {
     question: string;
@@ -27,7 +26,7 @@ export const MultipleChoiceExercise = ({ question, options, correctAnswer }: Mul
         }
         setSubmitted(true);
         if (selectedOption === correctAnswer) {
-            toast.success('Correto!');
+            toast.success('Correto!', { description: "+10 XP" });
         } else {
             toast.error('Incorreto. Tente novamente!');
         }

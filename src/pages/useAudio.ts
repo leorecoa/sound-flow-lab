@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 
 export const useAudio = (url: string) => {
-    const audio = useMemo(() => new Audio(url), [url]);
+    const audio = useMemo(() => (url ? new Audio(url) : null), [url]);
     const [isPlaying, setIsPlaying] = useState(false);
 
     const toggle = () => setIsPlaying(!isPlaying);
 
     useEffect(() => {
         if (isPlaying) {
-            audio.play().catch((e) => {
+            audio?.play().catch((e) => {
                 console.error("Error playing audio:", e);
                 setIsPlaying(false);
             });
@@ -19,16 +19,16 @@ export const useAudio = (url: string) => {
 
     useEffect(() => {
         const handleEnded = () => setIsPlaying(false);
-        audio.addEventListener('ended', handleEnded);
+        audio?.addEventListener('ended', handleEnded);
         return () => {
-            audio.removeEventListener('ended', handleEnded);
+            audio?.removeEventListener('ended', handleEnded);
         };
     }, [audio]);
 
     useEffect(() => {
         // Cleanup on unmount
         return () => {
-            audio.pause();
+            audio?.pause();
         };
     }, [audio]);
 

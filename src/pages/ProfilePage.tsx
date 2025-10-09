@@ -1,13 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { WeeklyProgressChart } from "@/components/WeeklyProgressChart";
+import { WeeklyProgressChart } from "./WeeklyProgressChart";
 import { Award, Star, Trophy, Flame } from "lucide-react";
 
 const user = {
     name: "Leo Recoa",
     avatarUrl: "https://github.com/shadcn.png", // Placeholder
     joinDate: "Membro desde Julho 2024",
+    xp: 275, // Pontos de experiência
     overallProgress: 75,
     streak: {
         current: 5,
@@ -31,6 +32,11 @@ const weeklyProgressData = [
 ];
 
 const ProfilePage = () => {
+    // Lógica do sistema de níveis
+    const xpForNextLevel = 100;
+    const level = Math.floor(user.xp / xpForNextLevel) + 1;
+    const progressToNextLevel = (user.xp % xpForNextLevel);
+
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             {/* User Info */}
@@ -59,6 +65,23 @@ const ProfilePage = () => {
                         <Trophy className="w-16 h-16 mx-auto text-yellow-400" />
                         <p className="text-2xl font-bold mt-2">{user.streak.longest}</p>
                         <p className="text-sm text-muted-foreground">Maior sequência</p>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Level System */}
+            <Card className="mb-8">
+                <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                        <span>Nível {level}</span>
+                        <span className="text-sm font-normal text-muted-foreground">{user.xp} XP</span>
+                    </CardTitle>
+                    <CardDescription>Progresso para o Nível {level + 1}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex items-center gap-4">
+                        <Progress value={progressToNextLevel} className="h-3" />
+                        <span className="text-sm font-bold text-primary">{progressToNextLevel}%</span>
                     </div>
                 </CardContent>
             </Card>

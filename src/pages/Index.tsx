@@ -1,7 +1,15 @@
 import { ModuleCard } from "@/components/ModuleCard";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Link2, MessageSquare, Zap, Volume2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const modules = [
   {
@@ -38,6 +46,46 @@ const modules = [
   }
 ];
 
+const testimonials = [
+  {
+    name: "Juliana S.",
+    role: "Desenvolvedora de Software",
+    avatar: "https://github.com/shadcn.png", // Placeholder
+    quote: "O Sound Flow Lab mudou completamente minha confiança ao falar inglês. Finalmente entendo por que os nativos falam tão rápido!"
+  },
+  {
+    name: "Marcos P.",
+    role: "Estudante de Intercâmbio",
+    avatar: "https://github.com/shadcn.png", // Placeholder
+    quote: "Essencial para quem vai viajar. As lições sobre 'connected speech' são algo que nenhuma outra escola ensina de forma tão clara."
+  },
+  {
+    name: "Carla M.",
+    role: "Gerente de Projetos",
+    avatar: "https://github.com/shadcn.png", // Placeholder
+    quote: "Minhas reuniões em inglês se tornaram muito mais fáceis. Consigo entender e ser entendida sem esforço. Recomendo 100%!"
+  }
+];
+
+const faqItems = [
+  {
+    question: "Para quem é o Sound Flow Lab?",
+    answer: "É para qualquer brasileiro, de nível intermediário a avançado, que já entende inglês mas sente dificuldade em falar com a mesma naturalidade e velocidade de um nativo."
+  },
+  {
+    question: "Preciso de algum equipamento especial?",
+    answer: "Não! Tudo que você precisa é de um dispositivo com acesso à internet e um microfone (o microfone do seu celular ou fone de ouvido já é suficiente) para os exercícios de gravação."
+  },
+  {
+    question: "Em quanto tempo verei resultados?",
+    answer: "A consistência é a chave. Com 15-20 minutos de prática diária, muitos alunos relatam uma melhora significativa na compreensão e na confiança para falar em poucas semanas."
+  },
+  {
+    question: "O método é baseado em alguma ciência?",
+    answer: "Sim! Nossa abordagem é baseada em princípios da fonética e fonologia, focando em aspectos como 'connected speech', ritmo e entonação, que são cruciais para a fluência e a pronúncia natural."
+  }
+];
+
 const Index = () => {
   return (
     <div>
@@ -61,15 +109,14 @@ const Index = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button
-                size="lg"
-                className="text-lg h-14 px-8 shadow-lg hover:shadow-xl 
-                           bg-gradient-to-r from-primary to-accent text-primary-foreground 
-                           bg-[length:200%_auto] hover:bg-[position:right_center] 
-                           transition-all duration-500 ease-in-out"
-              >
-                Começar Agora
-                <Zap className="ml-2 w-5 h-5" />
+              <Button asChild size="lg" className="text-lg h-14 px-8 shadow-lg hover:shadow-xl 
+                         bg-gradient-to-r from-primary to-accent text-primary-foreground 
+                         bg-[length:200%_auto] hover:bg-[position:right_center] 
+                         transition-all duration-500 ease-in-out">
+                <Link to="/module/1">
+                  Começar Agora
+                  <Zap className="ml-2 w-5 h-5" />
+                </Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg h-14 px-8">
                 Saber Mais
@@ -124,6 +171,53 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="container mx-auto px-4 py-16 bg-muted/50 rounded-3xl">
+        <SectionHeader
+          title="O que nossos alunos dizem"
+          subtitle="Veja como o Sound Flow Lab está transformando a fluência de pessoas como você."
+        />
+        <div className="grid md:grid-cols-3 gap-8 mt-12 max-w-6xl mx-auto">
+          {testimonials.map((testimonial) => (
+            <div key={testimonial.name} className="bg-card p-6 rounded-2xl shadow-sm">
+              <div className="flex flex-col h-full">
+                <p className="text-muted-foreground mb-6 flex-grow">"{testimonial.quote}"</p>
+                <div className="flex items-center gap-4">
+                  <Avatar>
+                    <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="container mx-auto px-4 py-16">
+        <SectionHeader
+          title="Perguntas Frequentes"
+          subtitle="Tudo o que você precisa saber para começar sua jornada sonora."
+        />
+        <div className="max-w-3xl mx-auto mt-12">
+          <Accordion type="single" collapsible className="w-full">
+            {faqItems.map((item) => (
+              <AccordionItem value={item.question} key={item.question}>
+                <AccordionTrigger className="text-lg text-left font-semibold">{item.question}</AccordionTrigger>
+                <AccordionContent className="text-base text-muted-foreground">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto">
@@ -132,14 +226,11 @@ const Index = () => {
             <p className="text-xl mb-8 text-white/90">
               Comece agora e transforme sua compreensão do inglês falado
             </p>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="h-14 px-8 text-lg shadow-lg 
-                         hover:scale-105 transition-transform duration-300"
-            >
-              Iniciar Primeira Lição
-              <Zap className="ml-2 w-5 h-5" />
+            <Button asChild size="lg" variant="secondary" className="h-14 px-8 text-lg shadow-lg hover:scale-105 transition-transform duration-300">
+              <Link to="/module/1">
+                Iniciar Primeira Lição
+                <Zap className="ml-2 w-5 h-5" />
+              </Link>
             </Button>
           </div>
         </div>

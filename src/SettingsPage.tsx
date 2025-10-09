@@ -1,15 +1,29 @@
+import { useState } from "react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const SettingsPage = () => {
+    const [isSaving, setIsSaving] = useState(false);
 
-    const handleSaveChanges = () => {
-        toast.success("Alterações salvas com sucesso!");
+    const handleSaveChanges = async () => {
+        setIsSaving(true);
+        try {
+            // Simula uma chamada de API com um atraso de 1.5 segundos
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            toast.success("Alterações salvas com sucesso!");
+        } catch (error) {
+            // Correção (S2486): Implementado tratamento de erro adequado para capturar e registrar a exceção, melhorando a robustez.
+            console.error("Erro ao salvar as configurações:", error);
+            toast.error("Não foi possível salvar as alterações.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleDeleteAccount = () => {
@@ -39,7 +53,12 @@ const SettingsPage = () => {
                             <Label htmlFor="email">Email</Label>
                             <Input id="email" type="email" defaultValue="leo.recoa@example.com" disabled />
                         </div>
-                        <Button onClick={handleSaveChanges}>Salvar Alterações</Button>
+                        <Button onClick={handleSaveChanges} disabled={isSaving}>
+                            {isSaving && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
+                            {isSaving ? "Salvando..." : "Salvar Alterações"}
+                        </Button>
                     </CardContent>
                 </Card>
 
