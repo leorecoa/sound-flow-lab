@@ -7,9 +7,9 @@ import { ExampleCard } from "@/components/ExampleCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { useMediaRecorder } from "./useMediaRecorder";
-import { MultipleChoiceExercise } from "./MultipleChoiceExercise";
-import { SoundWave } from "./SoundWave";
+import { useMediaRecorder } from "@/hooks/useMediaRecorder";
+import { MultipleChoiceExercise } from "@/components/MultipleChoiceExercise";
+import { SoundWave } from "@/components/SoundWave";
 import { useQuery } from "@tanstack/react-query";
 // @ts-ignore: Install '@types/react-confetti' for type definitions
 import ReactConfetti from "react-confetti";

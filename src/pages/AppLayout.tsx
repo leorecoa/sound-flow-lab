@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User, Waves, Settings, LogOut, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Footer } from "./Footer";
+import { Footer } from "@/components/Footer";
 import { ThemeToggle } from "./theme-toggle";
 import {
     DropdownMenu,
