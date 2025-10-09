@@ -5,20 +5,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 const SettingsPage = () => {
     const [isSaving, setIsSaving] = useState(false);
+    const { preferences, updatePreference, resetPreferences } = useUserPreferences();
 
     const handleSaveChanges = async () => {
         setIsSaving(true);
         try {
-            // Simula uma chamada de API com um atraso de 1.5 segundos
             await new Promise(resolve => setTimeout(resolve, 1500));
             toast.success("Alterações salvas com sucesso!");
         } catch (error) {
-            // Correção (S2486): Implementado tratamento de erro adequado para capturar e registrar a exceção, melhorando a robustez.
             console.error("Erro ao salvar as configurações:", error);
             toast.error("Não foi possível salvar as alterações.");
         } finally {
@@ -28,6 +29,11 @@ const SettingsPage = () => {
 
     const handleDeleteAccount = () => {
         toast.error("Ação perigosa! Funcionalidade desativada na demonstração.");
+    };
+
+    const handleResetPreferences = () => {
+        resetPreferences();
+        toast.success("Preferências resetadas para padrão!");
     };
 
     return (
@@ -58,6 +64,66 @@ const SettingsPage = () => {
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             )}
                             {isSaving ? "Salvando..." : "Salvar Alterações"}
+                        </Button>
+                    </CardContent>
+                </Card>
+
+                {/* Learning Preferences */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Preferências de Aprendizado</CardTitle>
+                        <CardDescription>Personalize sua experiência de estudo.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="playback-speed">Velocidade de Reprodução</Label>
+                            <Select 
+                                value={preferences.playbackSpeed.toString()} 
+                                onValueChange={(value) => updatePreference("playbackSpeed", parseFloat(value))}
+                            >
+                                <SelectTrigger id="playback-speed">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="0.5">0.5x (Muito Lento)</SelectItem>
+                                    <SelectItem value="0.75">0.75x (Lento)</SelectItem>
+                                    <SelectItem value="1">1x (Normal)</SelectItem>
+                                    <SelectItem value="1.25">1.25x (Rápido)</SelectItem>
+                                    <SelectItem value="1.5">1.5x (Muito Rápido)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="language">Idioma Base</Label>
+                            <Select 
+                                value={preferences.language} 
+                                onValueChange={(value: "pt" | "en") => updatePreference("language", value)}
+                            >
+                                <SelectTrigger id="language">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="pt">Português 🇧🇷</SelectItem>
+                                    <SelectItem value="en">English 🇺🇸</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="flex items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                                <Label htmlFor="auto-play" className="text-base">Reprodução Automática</Label>
+                                <p className="text-sm text-muted-foreground">Iniciar áudio automaticamente ao abrir exemplos.</p>
+                            </div>
+                            <Switch 
+                                id="auto-play" 
+                                checked={preferences.autoPlay}
+                                onCheckedChange={(checked) => updatePreference("autoPlay", checked)}
+                            />
+                        </div>
+
+                        <Button onClick={handleResetPreferences} variant="outline" className="w-full">
+                            Resetar Preferências
                         </Button>
                     </CardContent>
                 </Card>

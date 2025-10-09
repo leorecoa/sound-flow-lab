@@ -1,0 +1,35 @@
+{
+  "name": "Sound Flow Lab",
+  "short_name": "SoundFlow",
+  "description": "Aprenda a falar inglês com fluidez e pronúncia nativa através da sonoridade",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a0b2e",
+  "theme_color": "#a855f7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/placeholder.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/placeholder.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Módulo 1",
+      "short_name": "Módulo 1",
+      "description": "Consoante + Vogal",
+      "url": "/module/1",
+      "icons": []
+    }
+  ]
+}
