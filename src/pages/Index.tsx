@@ -157,13 +157,13 @@ const Index = () => {
       </section>
 
       {/* Modules Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="practice-flow-section" className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
           <SectionHeader
             title="Your Practice Flow"
             subtitle="Comece sua jornada através dos módulos progressivos para dominar as conexões sonoras do inglês." />
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div id="module-card-1" className="grid md:grid-cols-2 gap-6">
             {modules.map((module) => (
               <ModuleCard key={module.id} {...module} moduleId={module.id} />
             ))}

@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { AppTour } from "@/components/AppTour";
 
 export const AppLayout = () => {
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ export const AppLayout = () => {
 
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col">
+            <AppTour />
             <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container h-16 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2">
@@ -32,7 +34,7 @@ export const AppLayout = () => {
                     </Link>
                     <nav className="flex items-center gap-4">
                         <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            <DropdownMenuTrigger asChild id="user-menu-button">
                                 <Button variant="ghost" size="icon" className="rounded-full">
                                     <User className="w-5 h-5" />
                                     <span className="sr-only">Abrir menu do usuário</span>
