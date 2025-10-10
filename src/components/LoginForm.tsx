@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,7 +21,12 @@ export const LoginForm = () => {
     const { signIn, sendPasswordResetEmail } = useAuth();
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [loginData, setLoginData] = useState({
+        email: '',
+        password: ''
+    });
+    const [errors, setErrors] = useState({
         email: '',
         password: ''
     });
@@ -32,8 +37,8 @@ export const LoginForm = () => {
 
         if (!loginData.email || !loginData.password) {
             toast({
-                title: 'Erro',
-                description: 'Preencha todos os campos',
+                title: 'Campos incompletos',
+                description: 'Por favor, preencha seu email e senha.',
                 variant: 'destructive'
             });
             setLoading(false);
@@ -43,13 +48,10 @@ export const LoginForm = () => {
         const { error } = await signIn(loginData.email, loginData.password);
 
         if (error) {
-            toast({
-                title: 'Erro ao entrar',
-                description: error.message === 'Invalid login credentials'
-                    ? 'Email ou senha incorretos'
-                    : error.message,
-                variant: 'destructive'
-            });
+            const errorMessage = error.message === 'Invalid login credentials'
+                ? 'Email ou senha incorretos.'
+                : 'Ocorreu um erro. Tente novamente.';
+            setErrors({ ...errors, email: errorMessage, password: errorMessage });
         }
 
         setLoading(false);
@@ -83,17 +85,35 @@ export const LoginForm = () => {
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     disabled={loading}
                 />
+                {errors.email && (
+                    <p className="text-sm text-destructive mt-1">{errors.email}</p>
+                )}
             </div>
             <div className="space-y-2">
                 <Label htmlFor="login-password">Senha</Label>
-                <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    disabled={loading}
-                />
+                <div className="relative">
+                    <Input
+                        id="login-password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={loginData.password}
+                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                        disabled={loading}
+                    />
+                    {errors.password && !errors.email && (
+                        <p className="text-sm text-destructive mt-1">{errors.password}</p>
+                    )}
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute inset-y-0 right-0 h-full px-3"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
+                    >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                </div>
                 <div className="flex justify-end">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>

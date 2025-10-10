@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
@@ -73,7 +72,6 @@ const UpdatePasswordPage = () => {
                     <form onSubmit={handleUpdatePassword} className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="new-password">Nova Senha</Label>
-                            <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} />
                             <div className="relative">
                                 <Input id="new-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} />
                                 <Button
@@ -90,7 +88,6 @@ const UpdatePasswordPage = () => {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="confirm-password">Confirmar Nova Senha</Label>
-                            <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={loading} />
                             <div className="relative">
                                 <Input id="confirm-password" type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={loading} />
                                 <Button
