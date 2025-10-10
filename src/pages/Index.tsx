@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { ModuleCard } from "@/components/ModuleCard";
 import { Button } from "@/components/ui/button";
+import { ModuleCardSkeleton } from "@/components/ModuleCardSkeleton";
 import { Link } from "react-router-dom";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Link2, MessageSquare, Zap, Volume2 } from "lucide-react";
@@ -87,6 +89,16 @@ const faqItems = [
 ];
 
 const Index = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate fetching module data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // Simulate a 1.5-second network delay
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div>
       {/* Hero Section */}
@@ -164,9 +176,17 @@ const Index = () => {
             subtitle="Comece sua jornada através dos módulos progressivos para dominar as conexões sonoras do inglês." />
 
           <div id="module-card-1" className="grid md:grid-cols-2 gap-6">
-            {modules.map((module) => (
-              <ModuleCard key={module.id} {...module} moduleId={module.id} />
-            ))}
+            {isLoading ? (
+              // Show skeleton loaders while data is being "fetched"
+              Array.from({ length: 4 }).map((_, index) => (
+                <ModuleCardSkeleton key={index} />
+              ))
+            ) : (
+              // Show the actual module cards once data is loaded
+              modules.map((module) => (
+                <ModuleCard key={module.id} {...module} moduleId={module.id} />
+              ))
+            )}
           </div>
         </div>
       </section>
