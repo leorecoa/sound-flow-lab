@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Logo } from '@/components/Logo';
+import { Logo } from '../components/Logo';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

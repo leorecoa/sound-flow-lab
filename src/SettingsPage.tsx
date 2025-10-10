@@ -77,8 +77,8 @@ const SettingsPage = () => {
                     <CardContent className="space-y-6">
                         <div className="space-y-2">
                             <Label htmlFor="playback-speed">Velocidade de Reprodução</Label>
-                            <Select 
-                                value={preferences.playbackSpeed.toString()} 
+                            <Select
+                                value={preferences.playbackSpeed.toString()}
                                 onValueChange={(value) => updatePreference("playbackSpeed", parseFloat(value))}
                             >
                                 <SelectTrigger id="playback-speed">
@@ -96,8 +96,8 @@ const SettingsPage = () => {
 
                         <div className="space-y-2">
                             <Label htmlFor="language">Idioma Base</Label>
-                            <Select 
-                                value={preferences.language} 
+                            <Select
+                                value={preferences.language}
                                 onValueChange={(value: "pt" | "en") => updatePreference("language", value)}
                             >
                                 <SelectTrigger id="language">
@@ -115,8 +115,8 @@ const SettingsPage = () => {
                                 <Label htmlFor="auto-play" className="text-base">Reprodução Automática</Label>
                                 <p className="text-sm text-muted-foreground">Iniciar áudio automaticamente ao abrir exemplos.</p>
                             </div>
-                            <Switch 
-                                id="auto-play" 
+                            <Switch
+                                id="auto-play"
                                 checked={preferences.autoPlay}
                                 onCheckedChange={(checked) => updatePreference("autoPlay", checked)}
                             />

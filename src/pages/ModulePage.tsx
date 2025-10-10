@@ -7,10 +7,11 @@ import { ExampleCard } from "@/components/ExampleCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { useMediaRecorder } from "@/hooks/useMediaRecorder";
+import { useMediaRecorder } from "../hooks/useMediaRecorder";
 import { MultipleChoiceExercise } from "@/components/MultipleChoiceExercise";
 import { SoundWave } from "@/components/SoundWave";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabaseClient";
 // @ts-ignore: Install '@types/react-confetti' for type definitions
 import ReactConfetti from "react-confetti";
 
@@ -26,21 +27,21 @@ const moduleData = {
         connectedPhrase: "IT_IS_AN_APPLE",
         translation: "É uma maçã",
         context: "Conversa casual",
-        audioUrl: "/audio/it-is-an-apple.mp3" // Placeholder
+        audioUrl: "https://<your-project-ref>.supabase.co/storage/v1/object/public/audio_examples/it-is-an-apple.mp3" // Real URL
       },
       {
         formalPhrase: "Turn it off",
         connectedPhrase: "TURN_IT_OFF",
         translation: "Desligue isso",
         context: "Pedido direto",
-        audioUrl: "/audio/turn-it-off.mp3" // Placeholder
+        audioUrl: "https://<your-project-ref>.supabase.co/storage/v1/object/public/audio_examples/turn-it-off.mp3" // Real URL
       },
       {
         formalPhrase: "Pick it up",
         connectedPhrase: "PICK_IT_UP",
         translation: "Pegue isso",
         context: "Instrução",
-        audioUrl: "/audio/pick-it-up.mp3" // Placeholder
+        audioUrl: "https://<your-project-ref>.supabase.co/storage/v1/object/public/audio_examples/pick-it-up.mp3" // Real URL
       }
     ],
     exercises: [
@@ -77,10 +78,29 @@ const fetchModule = async (moduleId: string) => {
   throw new Error("Módulo não encontrado");
 };
 
+const completeExercise = async (exerciseId: string) => {
+  const { data, error } = await supabase.functions.invoke('complete-exercise', {
+    body: { exercise_id: exerciseId },
+  });
+  if (error) throw error;
+  return data;
+};
+
 const ModulePage = () => {
   const { moduleId } = useParams<{ moduleId: string }>();
+  const queryClient = useQueryClient();
   const { status, mediaBlobUrl, startRecording, stopRecording } = useMediaRecorder();
   const [showConfetti, setShowConfetti] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: completeExercise,
+    onSuccess: () => {
+      toast.success("Parabéns! Pronúncia perfeita!", { description: "+25 XP" });
+      setShowConfetti(true);
+      queryClient.invalidateQueries({ queryKey: ['modules'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
 
   const { data: module, isLoading, isError, error } = useQuery({
     queryKey: ['module', moduleId],
@@ -89,10 +109,9 @@ const ModulePage = () => {
     enabled: !!moduleId, // The query will not run until moduleId is available
   });
 
-  const handleCheckPronunciation = () => {
-    // Simula uma verificação de sucesso
-    toast.success("Parabéns! Pronúncia perfeita!", { description: "+25 XP" });
-    setShowConfetti(true);
+  const handleCheckPronunciation = (exerciseId: string) => {
+    // In a real app, you would first send the audio for analysis. Here we simulate success.
+    mutation.mutate(exerciseId);
   };
 
   const handlePlayAudio = () => {
@@ -215,6 +234,7 @@ const ModulePage = () => {
                   if (exercise.type === 'multiple_choice') {
                     return <MultipleChoiceExercise
                       key={exercise.id}
+                      id={exercise.id}
                       question={exercise.question}
                       options={exercise.options}
                       correctAnswer={exercise.correctAnswer}
@@ -260,7 +280,7 @@ const ModulePage = () => {
                       <audio src={mediaBlobUrl} controls className="w-full">
                         <track kind="captions" />
                       </audio>
-                      <Button onClick={handleCheckPronunciation} className="mt-4">
+                      <Button onClick={() => handleCheckPronunciation('pratice-ex-1')} className="mt-4">
                         <Check className="w-4 h-4 mr-2" />
                         Verificar Pronúncia
                       </Button>

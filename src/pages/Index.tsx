@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabaseClient";
 import { ModuleCard } from "@/components/ModuleCard";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ModuleCardSkeleton } from "@/components/ModuleCardSkeleton";
 import { Link } from "react-router-dom";
@@ -13,40 +15,26 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const modules = [
-  {
-    id: "1",
-    title: "Consoante + Vogal",
-    description: "Aprenda como consoantes se conectam com vogais na fala natural",
-    icon: Link2,
-    progress: 0,
-    color: "from-primary to-primary/80"
-  },
-  {
-    id: "2",
-    title: "Consoante + Consoante",
-    description: "Domine as conexões entre consoantes consecutivas",
-    icon: MessageSquare,
-    progress: 0,
-    color: "from-accent to-accent/80"
-  },
-  {
-    id: "3",
-    title: "Vogal + Vogal",
-    description: "Entenda como vogais se fundem no inglês falado",
-    icon: Zap,
-    progress: 0,
-    color: "from-success to-success/80"
-  },
-  {
-    id: "4",
-    title: "Reduções",
-    description: "Aprenda as reduções mais comuns do inglês nativo",
-    icon: Volume2,
-    progress: 0,
-    color: "from-primary to-accent"
+const iconMap = {
+  Link2,
+  MessageSquare,
+  Zap,
+  Volume2,
+};
+
+const fetchModules = async (userId: string | undefined) => {
+  if (userId) {
+    // If user is logged in, fetch modules with their specific progress
+    const { data, error } = await supabase.rpc('get_modules_with_progress', { p_user_id: userId });
+    if (error) throw new Error(error.message);
+    return data;
+  } else {
+    // If user is not logged in, fetch modules without progress
+    const { data, error } = await supabase.from('modules').select('*, progress:0').order('order');
+    if (error) throw new Error(error.message);
+    return data;
   }
-];
+};
 
 const testimonials = [
   {
@@ -89,15 +77,11 @@ const faqItems = [
 ];
 
 const Index = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Simulate fetching module data
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500); // Simulate a 1.5-second network delay
-    return () => clearTimeout(timer);
-  }, []);
+  const { user } = useAuth();
+  const { data: modules = [], isLoading } = useQuery({
+    queryKey: ['modules', user?.id], // The query will refetch if the user logs in/out
+    queryFn: () => fetchModules(user?.id),
+  });
 
   return (
     <div>
@@ -183,8 +167,16 @@ const Index = () => {
               ))
             ) : (
               // Show the actual module cards once data is loaded
-              modules.map((module) => (
-                <ModuleCard key={module.id} {...module} moduleId={module.id} />
+              modules.map((module: any) => (
+                <ModuleCard
+                  key={module.id}
+                  moduleId={module.id}
+                  title={module.title}
+                  description={module.description}
+                  icon={iconMap[module.icon_name as keyof typeof iconMap] || Zap}
+                  color={`${module.color_from || 'from-primary'} ${module.color_to || 'to-accent'}`}
+                  progress={module.progress || 0}
+                />
               ))
             )}
           </div>

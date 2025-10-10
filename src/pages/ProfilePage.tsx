@@ -1,24 +1,46 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { WeeklyProgressChart } from "./WeeklyProgressChart";
-import { Award, Star, Trophy, Flame } from "lucide-react";
+import { WeeklyProgressChart } from "@/components/WeeklyProgressChart";
+import { Award, Star, Trophy, Flame, Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const user = {
-    name: "Leo Recoa",
-    avatarUrl: "https://github.com/shadcn.png", // Placeholder
-    joinDate: "Membro desde Julho 2024",
-    xp: 275, // Pontos de experiência
-    overallProgress: 75,
-    streak: {
-        current: 5,
-        longest: 12,
-    },
-    achievements: [
-        { id: 1, name: "Sound Master", description: "Completou 100 exercícios", icon: Trophy, color: "text-yellow-400" },
-        { id: 2, name: "Accent Hero", description: "Atingiu 95% de precisão", icon: Star, color: "text-blue-400" },
-        { id: 3, name: "Vowel Voyager", description: "Dominou as conexões de vogais", icon: Award, color: "text-green-400" },
-    ],
+// Dados estáticos que serão substituídos no futuro
+const achievements = [
+    { id: 1, name: "Sound Master", description: "Completou 100 exercícios", icon: Trophy, color: "text-yellow-400" },
+    { id: 2, name: "Accent Hero", description: "Atingiu 95% de precisão", icon: Star, color: "text-blue-400" },
+    { id: 3, name: "Vowel Voyager", description: "Dominou as conexões de vogais", icon: Award, color: "text-green-400" },
+];
+
+const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('username, avatar_url, xp, created_at')
+        .eq('id', userId)
+        .single();
+
+    if (error) {
+        // Se o perfil não existir, podemos criar um
+        if (error.code === 'PGRST116') {
+            // Lógica para criar perfil aqui
+            console.warn("Perfil não encontrado para o usuário:", userId);
+            return null;
+        }
+        throw new Error(error.message);
+    }
+    return data;
+};
+
+const fetchStreaks = async () => {
+    const { data, error } = await supabase.functions.invoke('get-user-streaks');
+    if (error) {
+        console.error("Error fetching streaks:", error);
+        return { currentStreak: 0, longestStreak: 0 };
+    }
+    return data;
 };
 
 const weeklyProgressData = [
@@ -32,22 +54,52 @@ const weeklyProgressData = [
 ];
 
 const ProfilePage = () => {
+    const { user: authUser } = useAuth();
+    const { data: profile, isLoading } = useQuery({
+        queryKey: ['profile', authUser?.id],
+        queryFn: () => fetchProfile(authUser!.id),
+        enabled: !!authUser,
+    });
+
+    const { data: streaks, isLoading: isLoadingStreaks } = useQuery({
+        queryKey: ['streaks', authUser?.id],
+        queryFn: fetchStreaks,
+        enabled: !!authUser,
+    });
+
     // Lógica do sistema de níveis
     const xpForNextLevel = 100;
-    const level = Math.floor(user.xp / xpForNextLevel) + 1;
-    const progressToNextLevel = (user.xp % xpForNextLevel);
+    const level = profile ? Math.floor(profile.xp / xpForNextLevel) + 1 : 1;
+    const progressToNextLevel = profile ? (profile.xp % xpForNextLevel) : 0;
+
+    if (isLoading) {
+        return (
+            <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
+                <div className="flex items-center gap-6 mb-12">
+                    <Skeleton className="w-24 h-24 rounded-full" />
+                    <div className="space-y-2">
+                        <Skeleton className="h-10 w-48" />
+                        <Skeleton className="h-4 w-32" />
+                    </div>
+                </div>
+                <Skeleton className="h-32 w-full" />
+                <Skeleton className="h-40 w-full" />
+                <Skeleton className="h-64 w-full" />
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             {/* User Info */}
             <div className="flex items-center gap-6 mb-12">
                 <Avatar className="w-24 h-24 border-4 border-primary/50">
-                    <AvatarImage src={user.avatarUrl} alt={user.name} />
-                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={profile?.avatar_url ?? undefined} alt={profile?.username} />
+                    <AvatarFallback>{profile?.username?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
                 </Avatar>
                 <div>
-                    <h1 className="text-4xl font-bold">{user.name}</h1>
-                    <p className="text-muted-foreground">{user.joinDate}</p>
+                    <h1 className="text-4xl font-bold">{profile?.username || 'Usuário'}</h1>
+                    <p className="text-muted-foreground">Membro desde {profile ? new Date(profile.created_at).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' }) : '...'}</p>
                 </div>
             </div>
 
@@ -57,13 +109,13 @@ const ProfilePage = () => {
                     <div>
                         <div className="relative w-16 h-16 mx-auto">
                             <Flame className="w-16 h-16 text-orange-400" />
-                            <span className="absolute inset-0 flex items-center justify-center text-lg font-bold text-white">{user.streak.current}</span>
+                            <span className="absolute inset-0 flex items-center justify-center text-lg font-bold text-white">{isLoadingStreaks ? <Loader2 className="animate-spin" /> : streaks?.currentStreak || 0}</span>
                         </div>
                         <p className="text-sm text-muted-foreground mt-2">Dias seguidos</p>
                     </div>
                     <div>
                         <Trophy className="w-16 h-16 mx-auto text-yellow-400" />
-                        <p className="text-2xl font-bold mt-2">{user.streak.longest}</p>
+                        <p className="text-2xl font-bold mt-2">{isLoadingStreaks ? <Loader2 className="animate-spin mx-auto" /> : streaks?.longestStreak || 0}</p>
                         <p className="text-sm text-muted-foreground">Maior sequência</p>
                     </div>
                 </CardContent>
@@ -74,7 +126,7 @@ const ProfilePage = () => {
                 <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                         <span>Nível {level}</span>
-                        <span className="text-sm font-normal text-muted-foreground">{user.xp} XP</span>
+                        <span className="text-sm font-normal text-muted-foreground">{profile?.xp || 0} XP</span>
                     </CardTitle>
                     <CardDescription>Progresso para o Nível {level + 1}</CardDescription>
                 </CardHeader>
@@ -94,8 +146,8 @@ const ProfilePage = () => {
                 </CardHeader>
                 <CardContent>
                     <div className="flex items-center gap-4">
-                        <Progress value={user.overallProgress} className="h-3" />
-                        <span className="text-lg font-bold text-primary">{user.overallProgress}%</span>
+                        <Progress value={0} className="h-3" />
+                        <span className="text-lg font-bold text-primary">0%</span>
                     </div>
                 </CardContent>
             </Card>
@@ -107,7 +159,7 @@ const ProfilePage = () => {
             <div>
                 <h2 className="text-3xl font-bold mb-6">Conquistas</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {user.achievements.map((ach) => (
+                    {achievements.map((ach) => (
                         <Card key={ach.id} className="text-center p-6 flex flex-col items-center justify-center hover:border-primary/50 transition-colors">
                             <ach.icon className={`w-16 h-16 mb-4 ${ach.color}`} strokeWidth={1.5} />
                             <h3 className="text-xl font-semibold">{ach.name}</h3>

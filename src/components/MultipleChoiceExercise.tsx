@@ -1,16 +1,28 @@
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
+const completeExercise = async (exerciseId: string) => {
+    const { data, error } = await supabase.functions.invoke('complete-exercise', {
+        body: { exercise_id: exerciseId },
+    });
+    if (error) throw error;
+    return data;
+};
+
 interface MultipleChoiceExerciseProps {
+    id: string;
     question: string;
     options: string[];
     correctAnswer: string;
 }
 
-export const MultipleChoiceExercise = ({ question, options, correctAnswer }: MultipleChoiceExerciseProps) => {
+export const MultipleChoiceExercise = ({ id, question, options, correctAnswer }: MultipleChoiceExerciseProps) => {
+    const queryClient = useQueryClient();
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [submitted, setSubmitted] = useState(false);
 
@@ -19,6 +31,18 @@ export const MultipleChoiceExercise = ({ question, options, correctAnswer }: Mul
         setSelectedOption(option);
     };
 
+    const mutation = useMutation({
+        mutationFn: completeExercise,
+        onSuccess: () => {
+            toast.success('Correto!', { description: "+10 XP" });
+            queryClient.invalidateQueries({ queryKey: ['modules'] });
+            queryClient.invalidateQueries({ queryKey: ['profile'] });
+        },
+        onError: (error) => {
+            toast.error('Erro ao salvar progresso.', { description: error.message });
+        }
+    });
+
     const handleSubmit = () => {
         if (!selectedOption) {
             toast.warning('Por favor, selecione uma opção.');
@@ -26,7 +50,7 @@ export const MultipleChoiceExercise = ({ question, options, correctAnswer }: Mul
         }
         setSubmitted(true);
         if (selectedOption === correctAnswer) {
-            toast.success('Correto!', { description: "+10 XP" });
+            mutation.mutate(id);
         } else {
             toast.error('Incorreto. Tente novamente!');
         }

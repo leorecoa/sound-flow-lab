@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Volume2, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
-import { useAudio } from "@/pages/useAudio";
+import { useAudio } from "@/hooks/useAudio";
 
 interface ExampleCardProps {
   formalPhrase: string;
