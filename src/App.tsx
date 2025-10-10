@@ -15,6 +15,7 @@ import SettingsPage from "./SettingsPage";
 import AboutPage from "./pages/AboutPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import AuthPage from "./pages/AuthPage";
+import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => {
             {!isAppLoading && (
               <Routes>
                 <Route path="/auth" element={<AuthPage />} />
+                <Route path="/update-password" element={<UpdatePasswordPage />} />
                 <Route path="/" element={<Index />} />
                 <Route path="/module/:moduleId" element={<ProtectedRoute><ModulePage /></ProtectedRoute>} />
                 <Route path="/glossary" element={<ProtectedRoute><GlossaryPage /></ProtectedRoute>} />

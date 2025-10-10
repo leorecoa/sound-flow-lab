@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   loading: boolean;
+  updatePassword: (token: string, new_password: string) => Promise<{ error: any }>;
   sendPasswordResetEmail: (email: string) => Promise<any>;
 }
 
@@ -86,9 +87,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const updatePassword = async (token: string, new_password: string) => {
+    return await supabase.auth.updateUser({ password: new_password });
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, session, signUp, signIn, signOut, loading, sendPasswordResetEmail }}
+      value={{ user, session, signUp, signIn, signOut, loading, sendPasswordResetEmail, updatePassword }}
     >
       {children}
     </AuthContext.Provider>
