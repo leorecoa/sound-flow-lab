@@ -14,7 +14,234 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      examples: {
+        Row: {
+          audio_url: string | null
+          connected_phrase: string
+          context: string | null
+          created_at: string
+          formal_phrase: string
+          id: string
+          module_id: string
+          translation: string
+        }
+        Insert: {
+          audio_url?: string | null
+          connected_phrase: string
+          context?: string | null
+          created_at?: string
+          formal_phrase: string
+          id?: string
+          module_id: string
+          translation: string
+        }
+        Update: {
+          audio_url?: string | null
+          connected_phrase?: string
+          context?: string | null
+          created_at?: string
+          formal_phrase?: string
+          id?: string
+          module_id?: string
+          translation?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "examples_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exercises: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          id: string
+          module_id: string
+          options: Json | null
+          question: string
+          type: string
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          id?: string
+          module_id: string
+          options?: Json | null
+          question: string
+          type: string
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          id?: string
+          module_id?: string
+          options?: Json | null
+          question?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercises_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      glossary_terms: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          definition: string
+          example: string | null
+          id: string
+          term: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          definition: string
+          example?: string | null
+          id?: string
+          term: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          definition?: string
+          example?: string | null
+          id?: string
+          term?: string
+        }
+        Relationships: []
+      }
+      modules: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          order_index: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          order_index: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          order_index?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          module_id: string
+          score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          module_id: string
+          score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          module_id?: string
+          score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_scores: {
+        Row: {
+          created_at: string
+          id: string
+          last_activity: string | null
+          modules_completed: number | null
+          streak_days: number | null
+          total_score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_activity?: string | null
+          modules_completed?: number | null
+          streak_days?: number | null
+          total_score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_activity?: string | null
+          modules_completed?: number | null
+          streak_days?: number | null
+          total_score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

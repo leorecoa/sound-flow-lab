@@ -113,7 +113,7 @@ const Index = () => {
                          bg-gradient-to-r from-primary to-accent text-primary-foreground 
                          bg-[length:200%_auto] hover:bg-[position:right_center] 
                          transition-all duration-500 ease-in-out">
-                <Link to="/module/1">
+                <Link to="/auth">
                   Começar Agora
                   <Zap className="ml-2 w-5 h-5" />
                 </Link>

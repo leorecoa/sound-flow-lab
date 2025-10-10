@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { User, Waves, Settings, LogOut, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
@@ -11,17 +11,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
 import { AppTour } from "@/components/AppTour";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const AppLayout = () => {
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        // Em uma aplicação real, aqui você limparia tokens de autenticação, estado do usuário, etc.
-        toast.info("Você saiu da sua conta.");
-        navigate("/");
-    };
+    const { signOut } = useAuth();
 
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -53,7 +47,7 @@ export const AppLayout = () => {
                                     <Link to="/leaderboard" className="cursor-pointer"><Trophy className="mr-2 h-4 w-4" />Leaderboard</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 focus:text-red-500">
+                                <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-500 focus:text-red-500">
                                     <LogOut className="mr-2 h-4 w-4" />
                                     Sair
                                 </DropdownMenuItem>
