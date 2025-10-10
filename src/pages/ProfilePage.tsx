@@ -75,7 +75,6 @@ const ProfilePage = () => {
     if (isLoading) {
         return (
             <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
-                <div className="flex items-center gap-6 mb-12">
                 {/* Skeleton for User Info */}
                 <div className="flex items-center gap-6">
                     <Skeleton className="w-24 h-24 rounded-full" />
@@ -84,9 +83,6 @@ const ProfilePage = () => {
                         <Skeleton className="h-4 w-32" />
                     </div>
                 </div>
-                <Skeleton className="h-32 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-64 w-full" />
 
                 {/* Skeleton for Streak and Level Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
