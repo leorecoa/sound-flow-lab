@@ -13,7 +13,8 @@ export const useAudio = (url: string) => {
                 setIsPlaying(false);
             });
         } else {
-            audio.pause();
+            // Correção: Adicionado optional chaining para evitar erro caso 'audio' seja nulo.
+            audio?.pause();
         }
     }, [isPlaying, audio]);
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
     Accordion,
@@ -34,10 +34,12 @@ const glossaryTerms = [
 const GlossaryPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
-    const filteredTerms = glossaryTerms.filter(item =>
+    // Otimização: useMemo é usado para evitar recalcular a filtragem a cada renderização.
+    // A lista só será refiltrada quando 'searchTerm' mudar.
+    const filteredTerms = useMemo(() => glossaryTerms.filter(item =>
         item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.definition.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ), [searchTerm]);
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
