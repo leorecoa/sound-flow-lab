@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabaseClient";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
     Accordion,
@@ -6,40 +8,31 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 
-const glossaryTerms = [
-    {
-        term: "Connected Speech",
-        definition: "Refere-se a como os sons das palavras se ligam uns aos outros na fala natural e fluida, fazendo com que soem diferentes de quando são pronunciadas isoladamente.",
-    },
-    {
-        term: "Linking (Catenation)",
-        definition: "É a conexão de uma consoante final de uma palavra com a vogal inicial da palavra seguinte. Exemplo: 'an apple' soa como 'anapple'.",
-    },
-    {
-        term: "Intrusion",
-        definition: "A adição de um som extra (/j/, /w/, ou /r/) entre duas vogais para facilitar a transição. Exemplo: 'I am' pode soar como 'I-y-am'.",
-    },
-    {
-        term: "Elision",
-        definition: "A omissão de um ou mais sons (vogal, consoante ou sílaba inteira) em uma palavra ou frase para tornar a pronúncia mais fácil e rápida. Exemplo: 'camera' soa como 'camra'.",
-    },
-    {
-        term: "Assimilation",
-        definition: "Ocorre quando um som muda para se tornar mais semelhante a um som vizinho. Exemplo: 'handbag' pode soar como 'hambag'.",
-    },
-];
+const fetchGlossary = async () => {
+    const { data, error } = await supabase.from('glossary').select('*').order('term');
+    if (error) throw new Error(error.message);
+    return data;
+};
 
 const GlossaryPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
+    const { data: glossaryTerms = [], isLoading } = useQuery({
+        queryKey: ['glossary'],
+        queryFn: fetchGlossary,
+    });
 
     // Otimização: useMemo é usado para evitar recalcular a filtragem a cada renderização.
     // A lista só será refiltrada quando 'searchTerm' mudar.
-    const filteredTerms = useMemo(() => glossaryTerms.filter(item =>
-        item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.definition.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [searchTerm]);
+    const filteredTerms = useMemo(() => {
+        if (!glossaryTerms) return [];
+        return glossaryTerms.filter(item =>
+            item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.definition.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    }, [searchTerm, glossaryTerms]);
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
@@ -58,17 +51,25 @@ const GlossaryPage = () => {
                 />
             </div>
 
-            {filteredTerms.length > 0 ? (
-                <Accordion type="single" collapsible className="w-full">
-                    {filteredTerms.map((item) => (
-                        <AccordionItem value={item.term} key={item.term}>
-                            <AccordionTrigger className="text-lg text-left">{item.term}</AccordionTrigger>
-                            <AccordionContent className="text-base text-muted-foreground">{item.definition}</AccordionContent>
-                        </AccordionItem>
-                    ))}
-                </Accordion>
+            {isLoading ? (
+                <div className="space-y-4">
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                </div>
             ) : (
-                <p className="text-center text-muted-foreground">Nenhum termo encontrado para "{searchTerm}".</p>
+                filteredTerms.length > 0 ? (
+                    <Accordion type="single" collapsible className="w-full">
+                        {filteredTerms.map((item) => (
+                            <AccordionItem value={item.term} key={item.id}>
+                                <AccordionTrigger className="text-lg text-left">{item.term}</AccordionTrigger>
+                                <AccordionContent className="text-base text-muted-foreground">{item.definition}</AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                ) : (
+                    <p className="text-center text-muted-foreground">Nenhum termo encontrado para "{searchTerm}".</p>
+                )
             )}
         </div>
     );
