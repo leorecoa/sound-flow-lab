@@ -76,6 +76,8 @@ const ProfilePage = () => {
         return (
             <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
                 <div className="flex items-center gap-6 mb-12">
+                {/* Skeleton for User Info */}
+                <div className="flex items-center gap-6">
                     <Skeleton className="w-24 h-24 rounded-full" />
                     <div className="space-y-2">
                         <Skeleton className="h-10 w-48" />
@@ -85,6 +87,23 @@ const ProfilePage = () => {
                 <Skeleton className="h-32 w-full" />
                 <Skeleton className="h-40 w-full" />
                 <Skeleton className="h-64 w-full" />
+
+                {/* Skeleton for Streak and Level Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <Card>
+                        <CardContent className="pt-6 flex justify-around text-center">
+                            <div className="space-y-2"><Skeleton className="w-16 h-16 rounded-full mx-auto" /><Skeleton className="h-4 w-20" /></div>
+                            <div className="space-y-2"><Skeleton className="w-16 h-16 rounded-full mx-auto" /><Skeleton className="h-4 w-24" /></div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader><Skeleton className="h-6 w-1/2" /><Skeleton className="h-4 w-3/4 mt-1" /></CardHeader>
+                        <CardContent><Skeleton className="h-3 w-full" /></CardContent>
+                    </Card>
+                </div>
+
+                {/* Skeleton for Chart and Achievements */}
+                <Skeleton className="h-80 w-full" />
             </div>
         );
     }
