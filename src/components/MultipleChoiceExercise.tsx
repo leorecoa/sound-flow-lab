@@ -1,18 +1,9 @@
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-
-const completeExercise = async (exerciseId: string) => {
-    const { data, error } = await supabase.functions.invoke('complete-exercise', {
-        body: { exercise_id: exerciseId },
-    });
-    if (error) throw error;
-    return data;
-};
+import { useXP } from '@/hooks/useXP';
 
 interface MultipleChoiceExerciseProps {
     id: string;
@@ -22,26 +13,14 @@ interface MultipleChoiceExerciseProps {
 }
 
 export const MultipleChoiceExercise = ({ id, question, options, correctAnswer }: MultipleChoiceExerciseProps) => {
-    const queryClient = useQueryClient();
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [submitted, setSubmitted] = useState(false);
+    const addXPMutation = useXP();
 
     const handleSelectOption = (option: string) => {
         if (submitted) return;
         setSelectedOption(option);
     };
-
-    const mutation = useMutation({
-        mutationFn: completeExercise,
-        onSuccess: () => {
-            toast.success('Correto!', { description: "+10 XP" });
-            queryClient.invalidateQueries({ queryKey: ['modules'] });
-            queryClient.invalidateQueries({ queryKey: ['profile'] });
-        },
-        onError: (error) => {
-            toast.error('Erro ao salvar progresso.', { description: error.message });
-        }
-    });
 
     const handleSubmit = () => {
         if (!selectedOption) {
@@ -50,7 +29,7 @@ export const MultipleChoiceExercise = ({ id, question, options, correctAnswer }:
         }
         setSubmitted(true);
         if (selectedOption === correctAnswer) {
-            mutation.mutate(id);
+            addXPMutation.mutate(id);
         } else {
             toast.error('Incorreto. Tente novamente!');
         }

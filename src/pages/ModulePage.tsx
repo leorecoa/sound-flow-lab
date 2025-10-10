@@ -8,10 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useMediaRecorder } from "../hooks/useMediaRecorder";
+import { useXP } from "@/hooks/useXP";
 import { MultipleChoiceExercise } from "@/components/MultipleChoiceExercise";
 import { SoundWave } from "@/components/SoundWave";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabaseClient";
+import { useQuery } from "@tanstack/react-query";
 // @ts-ignore: Install '@types/react-confetti' for type definitions
 import ReactConfetti from "react-confetti";
 
@@ -78,29 +78,12 @@ const fetchModule = async (moduleId: string) => {
   throw new Error("Módulo não encontrado");
 };
 
-const completeExercise = async (exerciseId: string) => {
-  const { data, error } = await supabase.functions.invoke('complete-exercise', {
-    body: { exercise_id: exerciseId },
-  });
-  if (error) throw error;
-  return data;
-};
-
 const ModulePage = () => {
   const { moduleId } = useParams<{ moduleId: string }>();
-  const queryClient = useQueryClient();
   const { status, mediaBlobUrl, startRecording, stopRecording } = useMediaRecorder();
   const [showConfetti, setShowConfetti] = useState(false);
+  const addXPMutation = useXP();
 
-  const mutation = useMutation({
-    mutationFn: completeExercise,
-    onSuccess: () => {
-      toast.success("Parabéns! Pronúncia perfeita!", { description: "+25 XP" });
-      setShowConfetti(true);
-      queryClient.invalidateQueries({ queryKey: ['modules'] });
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-    },
-  });
 
   const { data: module, isLoading, isError, error } = useQuery({
     queryKey: ['module', moduleId],
@@ -111,7 +94,8 @@ const ModulePage = () => {
 
   const handleCheckPronunciation = (exerciseId: string) => {
     // In a real app, you would first send the audio for analysis. Here we simulate success.
-    mutation.mutate(exerciseId);
+    addXPMutation.mutate(exerciseId);
+    setShowConfetti(true);
   };
 
   const handlePlayAudio = () => {

@@ -6,8 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { SplashScreen } from "./components/SplashScreen";
-import Index from "./pages/Index";
+import { SplashScreen } from "./pages/SplashScreen";
+import Index from "./pages/Index.tsx";
 import ModulePage from "./pages/ModulePage";
 import NotFound from "./pages/NotFound";
 import GlossaryPage from "./pages/GlossaryPage";
@@ -36,22 +36,21 @@ const App = () => {
         <Sonner richColors />
         <BrowserRouter>
           <AuthProvider>
+            {/* O SplashScreen agora é controlado pelo estado 'isAppLoading' e terá animação de saída */}
             <SplashScreen isLoading={isAppLoading} />
-            {!isAppLoading && (
-              <Routes>
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/update-password" element={<UpdatePasswordPage />} />
-                <Route path="/" element={<Index />} />
-                <Route path="/module/:moduleId" element={<ProtectedRoute><ModulePage /></ProtectedRoute>} />
-                <Route path="/glossary" element={<ProtectedRoute><GlossaryPage /></ProtectedRoute>} />
-                <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-                <Route path="/about" element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
-                <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
-                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            )}
+            <Routes>
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/update-password" element={<UpdatePasswordPage />} />
+              <Route path="/" element={<Index />} />
+              <Route path="/module/:moduleId" element={<ProtectedRoute><ModulePage /></ProtectedRoute>} />
+              <Route path="/glossary" element={<ProtectedRoute><GlossaryPage /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+              <Route path="/about" element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
+              <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
