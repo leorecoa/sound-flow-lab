@@ -4,14 +4,18 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Contexts and Protected Routes
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+
+// Components and Pages
 import { SplashScreen } from "./components/SplashScreen";
-import Index from "./pages/Index.tsx";
+import Index from "./pages/Index";
 import ModulePage from "./pages/ModulePage";
 import NotFound from "./pages/NotFound";
 import GlossaryPage from "./pages/GlossaryPage";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./SettingsPage";
 import AboutPage from "./pages/AboutPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import AuthPage from "./pages/AuthPage";
