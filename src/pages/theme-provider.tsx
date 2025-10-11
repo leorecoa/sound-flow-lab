@@ -1,11 +1,32 @@
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { type ThemeProviderProps } from "next-themes/dist/types";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-// Correção (S6759): As props do componente foram marcadas como 'readonly' para garantir imutabilidade.
-export function ThemeProvider({ children, ...props }: Readonly<ThemeProviderProps>) {
-    return (
-        <NextThemesProvider {...props}>
-            {children}
-        </NextThemesProvider>
-    );
+type Theme = "light" | "dark";
+interface ThemeContextType {
+    theme: Theme;
+    setTheme: (theme: Theme) => void;
 }
+
+const ThemeContext = createContext<ThemeContextType>({
+    theme: "light",
+    setTheme: () => { },
+});
+
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [theme, setTheme] = useState<Theme>(
+        (localStorage.getItem("theme") as Theme) || "light"
+    );
+
+    useEffect(() => {
+        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.add(theme);
+        localStorage.setItem("theme", theme);
+    }, [theme]);
+
+    return (
+        <ThemeContext.Provider value={{ theme, setTheme }}>
+            {children}
+        </ThemeContext.Provider>
+    );
+};
+
+export const useTheme = () => useContext(ThemeContext);

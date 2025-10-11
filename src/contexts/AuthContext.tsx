@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   loading: boolean;
+  signInWithProvider: (provider: 'google' | 'github') => Promise<any>;
   updatePassword: (token: string, new_password: string) => Promise<{ error: any }>;
   sendPasswordResetEmail: (email: string) => Promise<any>;
 }
@@ -56,11 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     });
 
-    if (!error) {
-      navigate('/');
-    }
-
-    return { error };
+    return { error, data };
   };
 
   const signIn = async (email: string, password: string) => {
@@ -91,9 +88,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return await supabase.auth.updateUser({ password: new_password });
   };
 
+  const signInWithProvider = async (provider: 'google' | 'github') => {
+    return await supabase.auth.signInWithOAuth({
+      provider,
+    });
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, session, signUp, signIn, signOut, loading, sendPasswordResetEmail, updatePassword }}
+      value={{ user, session, signUp, signIn, signOut, loading, sendPasswordResetEmail, updatePassword, signInWithProvider }}
     >
       {children}
     </AuthContext.Provider>
