@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Logo } from "./Logo";
+import { Logo } from "@/components/Logo";
 
 interface SplashScreenProps {
     isLoading: boolean;

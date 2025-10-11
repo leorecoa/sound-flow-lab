@@ -1,37 +1,34 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-export const useAudio = (url: string) => {
-    const audio = useMemo(() => (url ? new Audio(url) : null), [url]);
-    const [isPlaying, setIsPlaying] = useState(false);
+export const useAudio = (url: string): [boolean, () => void] => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const toggle = () => setIsPlaying(!isPlaying);
+  useEffect(() => {
+    if (url) {
+      audioRef.current = new Audio(url);
+      audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+    }
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeEventListener('ended', () => setIsPlaying(false));
+      }
+    };
+  }, [url]);
 
-    useEffect(() => {
-        if (isPlaying) {
-            audio?.play().catch((e) => {
-                console.error("Error playing audio:", e);
-                setIsPlaying(false);
-            });
-        } else {
-            // Correção: Adicionado optional chaining para evitar erro caso 'audio' seja nulo.
-            audio?.pause();
-        }
-    }, [isPlaying, audio]);
+  const toggleAudio = () => {
+    if (!audioRef.current) return;
 
-    useEffect(() => {
-        const handleEnded = () => setIsPlaying(false);
-        audio?.addEventListener('ended', handleEnded);
-        return () => {
-            audio?.removeEventListener('ended', handleEnded);
-        };
-    }, [audio]);
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
 
-    useEffect(() => {
-        // Cleanup on unmount
-        return () => {
-            audio?.pause();
-        };
-    }, [audio]);
-
-    return [isPlaying, toggle] as const;
+  return [isPlaying, toggleAudio];
 };
