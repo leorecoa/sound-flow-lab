@@ -1,3 +1,4 @@
+"build:dev": "vite build --mode development",
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
@@ -9,6 +10,13 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:dev": "vite build --mode development"
+  }
+
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
